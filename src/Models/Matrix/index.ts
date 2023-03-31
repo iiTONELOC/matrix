@@ -1,12 +1,8 @@
-/**
- * While an array of arrays is a valid matrix, it is not a good way to represent a matrix.
- * This class provides a better way to represent a matrix.
- * It also provides a way to perform matrix operations.
- */
+import { validateCol, validateConstructor, validateGet, validateRow, validateSet } from './helpers';
 
 
 /**
- * The interface for a matrix.
+ * Represents a Matrix object.
  * @interface MatrixIface
  * @property {number} numRows The number of rows in the matrix.
  * @property {number} numCols The number of columns in the matrix.
@@ -28,16 +24,47 @@ export interface MatrixIface {
      * @param col The column of the value to return. Note: the first column is 0.
      * @returns The value at the specified row and column.
      * @throws Throws an error if the row or column is out of bounds.
-     * @example
-     * const matrix = new Matrix(2, 2, [1, 2, 3, 4]);
-     * matrix.get(0, 0); // 1
-     * matrix.get(0, 1); // 2
-     * matrix.get(1, 0); // 3
-     * matrix.get(1, 1); // 4
-     * matrix.get(2, 0); // Throws an error
-     * matrix.get(0, 2); // Throws an error
     */
     get(row: number, col: number): number;
+
+    /**
+     * Sets the value at the specified row and column.
+     * @param row The row of the value to set. Note: the first row is 0.
+     * @param col The column of the value to set. Note: the first column is 0.
+     * @param value The value to set.
+     * @throws Throws an error if the row or column is out of bounds.
+     * @Throws Throws an error if the value is not a number.
+     *
+     * @example
+     */
+    set(row: number, col: number, value: number): void;
+
+    /**
+     * Returns a single row of the matrix as a 1D array.
+     * @param row The row to return. Note: the first row is 0.
+     * @returns A single row of the matrix as a 1D array.
+     * @throws Throws an error if the row is out of bounds.
+     */
+    getRow(row: number): number[];
+
+    /**
+     * Returns a single column of the matrix as a 1D array.
+     * @param col The column to return. Note: the first column is 0.
+     * @returns A single column of the matrix as a 1D array.
+     * @throws Throws an error if the column is out of bounds.
+     */
+    getColumn(col: number): number[];
+
+    /**
+     * This method creates a clone of the matrix.
+     */
+    clone(): MatrixIface;
+
+    /**
+     * This method prints out the matrix in dimensional format.
+     */
+    print(): void;
+
 }
 
 /**
@@ -63,75 +90,46 @@ export interface MatrixConstructor {
 
 export class Matrix implements MatrixIface {
     protected _matrix: number[];
-    numRows: number;
-    numCols: number;
+    public numRows: number;
+    public numCols: number;
 
     constructor({ numRows, numCols, matrix }: MatrixConstructor) {
-        // VALIDATION
-        // if numRows or numCols is less than 0 or not a number, throw an error
-        if (numRows < 0 || !Number.isInteger(numRows)) {
-            throw new Error(`Number of rows must be a positive integer. Received ${numRows}.`);
-        }
-
-        // if numRows or numCols is less than 0 or not a number, throw an error
-        if (numCols < 0 || !Number.isInteger(numCols)) {
-            throw new Error(`Number of columns must be a positive integer. Received ${numCols}.`);
-        }
-
-        // ensure that the provided matrix contains only numbers,
-        // can be flattened, and has the correct number of elements
-        if (matrix) {
-            if (!Array.isArray(matrix)) {
-                throw new Error(`Matrix must be an array. Received ${matrix}.`);
-            }
-
-            // flatten before more validation
-            matrix = matrix.flat();
-
-            if (matrix.some((value: unknown) => typeof value !== 'number')) {
-                throw new Error(`Matrix elements must contain only numbers. Received ${matrix}.`);
-            }
-
-            if (matrix.length !== numRows * numCols) {
-                throw new Error(`Matrix must contain ${numRows * numCols} elements. Received ${matrix.flat().length}.`);
-            }
-
-            this._matrix = matrix;
-        }
+        // validates the input parameters
+        validateConstructor({ numRows, numCols, matrix });
 
         this.numRows = numRows;
         this.numCols = numCols;
-        // the matrix is an optional parameter, so if it is not provided, create a new matrix
-        this._matrix = matrix || Array.from({ length: numRows * numCols }, () => 0);
+        this._matrix = matrix?.flat() as number[] || Array.from({ length: numRows * numCols }, () => 0);
     }
 
-
-    get(row: number, col: number): number {
-        if (row < 0 || row >= this.numRows) {
-            throw new Error(`Row ${row} is out of bounds.`);
-        }
-
-        if (col < 0 || col >= this.numCols) {
-            throw new Error(`Column ${col} is out of bounds.`);
-        }
-
-        if (typeof row !== 'number') {
-            throw new Error(`Row must be a number. Received ${row}.`);
-        }
-
-        if (typeof col !== 'number') {
-            throw new Error(`Column must be a number. Received ${col}.`);
-        }
-
-        if (!Number.isInteger(row)) {
-            throw new Error(`Row must be an integer. Received ${row}.`);
-        }
-
-        if (!Number.isInteger(col)) {
-            throw new Error(`Column must be an integer. Received ${col}.`);
-        }
-
+    public get(row: number, col: number): number {
+        validateGet(row, col, this);
         return this._matrix[row * this.numCols + col];
+    }
+
+    public set(row: number, col: number, value: number): void {
+        validateSet(row, col, value, this);
+        this._matrix[row * this.numCols + col] = value;
+    }
+
+    public getRow(row: number): number[] {
+        validateRow(row, this.numRows);
+        return this._matrix.slice(row * this.numCols, (row + 1) * this.numCols);
+    }
+
+    public getColumn(col: number): number[] {
+        validateCol(col, this.numCols);
+        return this._matrix.filter((_, index) => index % this.numCols === col);
+    }
+
+    public clone(): MatrixIface {
+        return new Matrix({ numRows: this.numRows, numCols: this.numCols, matrix: this._matrix });
+    }
+
+    public print(): void {
+        for (let i = 0; i < this.numRows; i++) {
+            process.stdout.write(this.getRow(i).toString().replace(/,/g, ' '));
+        }
     }
 }
 
