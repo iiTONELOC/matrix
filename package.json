@@ -1,0 +1,31 @@
+{
+  "name": "matrices",
+  "version": "0.0.1",
+  "description": "A collection of functions written in TypeScript for working with matrices",
+  "main": "lib/index.js",
+  "author": "Anthony Tropeano - iiTONELOC",
+  "license": "MIT",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "npm run lint && rimraf lib/ && tsc",
+    "start": "npm run build && node lib/index.js",
+    "test": "jest",
+    "example": "node readmeExample.mjs",
+    "lint": "eslint src/**/*.ts",
+    "test-dev": "jest --watch",
+    "test-cov": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
+    "eslint": "^8.37.0",
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "rimraf": "^4.4.1",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.3"
+  }
+}
