@@ -1,5 +1,6 @@
-import { validateCol, validateConstructor, validateGet, validateRow, validateSet } from './helpers';
+import { MatrixUtilsIface } from './utils/types';
 
+export type { MatrixUtilsIface, MatrixType } from './utils/types';
 
 /**
  * Represents a Matrix object.
@@ -19,6 +20,12 @@ export interface MatrixIface {
     numCols: number;
 
     /**
+     * The matrix is represented as a 1D array.
+     */
+    _matrix: number[];
+
+    /**
+     * @public
      * Returns the value at the specified row and column.
      * @param row The row of the value to return. Note: the first row is 0.
      * @param col The column of the value to return. Note: the first column is 0.
@@ -28,6 +35,7 @@ export interface MatrixIface {
     get(row: number, col: number): number;
 
     /**
+     * @public
      * Sets the value at the specified row and column.
      * @param row The row of the value to set. Note: the first row is 0.
      * @param col The column of the value to set. Note: the first column is 0.
@@ -40,6 +48,7 @@ export interface MatrixIface {
     set(row: number, col: number, value: number): void;
 
     /**
+     * @public
      * Returns a single row of the matrix as a 1D array.
      * @param row The row to return. Note: the first row is 0.
      * @returns A single row of the matrix as a 1D array.
@@ -48,6 +57,7 @@ export interface MatrixIface {
     getRow(row: number): number[];
 
     /**
+     * @public
      * Returns a single column of the matrix as a 1D array.
      * @param col The column to return. Note: the first column is 0.
      * @returns A single column of the matrix as a 1D array.
@@ -56,19 +66,28 @@ export interface MatrixIface {
     getColumn(col: number): number[];
 
     /**
+     * @public
      * This method creates a clone of the matrix.
      */
     clone(): MatrixIface;
 
     /**
+     * @public
      * This method prints out the matrix in dimensional format.
      */
     print(): void;
 
+    utils: MatrixUtilsIface;
 }
+
+
 
 /**
  * Required parameters for the Matrix constructor.
+ * @interface MatrixConstructor
+ * @property {number} numRows The number of rows in the matrix.
+ * @property {number} numCols The number of columns in the matrix.
+ * @property {number[][] | number[]} matrix The matrix as a 1D array. A multi-dimensional array will be flattened.
  */
 export interface MatrixConstructor {
     /**
@@ -86,59 +105,4 @@ export interface MatrixConstructor {
      * If it is not provided, a new matrix will be created and initialized with zeros.
      */
     matrix?: (number[] | number[][]);
-}
-
-export class Matrix implements MatrixIface {
-    protected _matrix: number[];
-    public numRows: number;
-    public numCols: number;
-
-    constructor({ numRows, numCols, matrix }: MatrixConstructor) {
-        // validates the input parameters
-        validateConstructor({ numRows, numCols, matrix });
-
-        this.numRows = numRows;
-        this.numCols = numCols;
-        this._matrix = matrix?.flat() as number[] || Array.from({ length: numRows * numCols }, () => 0);
-    }
-
-    public get(row: number, col: number): number {
-        validateGet(row, col, this);
-        return this._matrix[row * this.numCols + col];
-    }
-
-    public set(row: number, col: number, value: number): void {
-        validateSet(row, col, value, this);
-        this._matrix[row * this.numCols + col] = value;
-    }
-
-    public getRow(row: number): number[] {
-        validateRow(row, this.numRows);
-        return this._matrix.slice(row * this.numCols, (row + 1) * this.numCols);
-    }
-
-    public getColumn(col: number): number[] {
-        validateCol(col, this.numCols);
-        return this._matrix.filter((_, index) => index % this.numCols === col);
-    }
-
-    public clone(): MatrixIface {
-        return new Matrix({ numRows: this.numRows, numCols: this.numCols, matrix: this._matrix });
-    }
-
-    public print(): void {
-        for (let i = 0; i < this.numRows; i++) {
-            process.stdout.write(this.getRow(i).toString().replace(/,/g, ' '));
-        }
-    }
-}
-
-/**
- * Attempts to create a new Matrix instance.
- * @param {MatrixConstructor} { numRows, numCols, matrix }
- * @returns a new Matrix instance or throws an error if construction fails.
- * @throws Throws an error if the number of rows or columns is less than 0 or
- */
-export default function matrix({ numRows, numCols, matrix }: MatrixConstructor): MatrixIface {
-    return new Matrix({ numRows, numCols, matrix });
 }

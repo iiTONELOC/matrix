@@ -1,4 +1,4 @@
-import { MatrixConstructor, MatrixIface } from '.';
+import { MatrixConstructor, MatrixIface } from './types';
 
 export const validateRowInput = (rowInput: unknown): void => {
     if (typeof rowInput !== 'number') {

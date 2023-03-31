@@ -1,5 +1,6 @@
 import { jest, describe, it, expect } from '@jest/globals';
-import _matrix, { Matrix, MatrixIface, MatrixConstructor } from '.';
+import { MatrixIface, MatrixConstructor } from './types';
+import _matrix, { Matrix } from '.';
 
 const mData: MatrixConstructor = {
     numRows: 2,
@@ -291,7 +292,11 @@ describe('Matrix', () => {
             it('Should return a new matrix with the same data', () => {
                 const clone: MatrixIface = matrix.clone();
                 expect(clone).not.toBe(matrix);
-                expect(clone).toEqual(matrix);
+                expect(clone).toBeInstanceOf(Matrix);
+                expect(clone.get(0, 0)).toBe(1);
+                expect(clone.get(0, 1)).toBe(2);
+                expect(clone.get(1, 0)).toBe(3);
+                expect(clone.get(1, 1)).toBe(4);
             });
         });
 
