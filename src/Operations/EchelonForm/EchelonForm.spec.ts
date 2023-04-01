@@ -19,6 +19,15 @@ const nonZeroMatrix: MatrixIface = Matrix({
     ]
 });
 
+const matrixWithPivots: MatrixIface = Matrix({
+    numRows: 3, numCols: 3,
+    matrix: [
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1]
+    ]
+});
+
 describe('EchelonForm', () => {
     it('Should be defined', () => {
         expect(EchelonForm).toBeDefined();
@@ -192,6 +201,52 @@ describe('EchelonForm', () => {
             expect(EchelonForm.isReducedEchelonForm(reducedEchelonMatrix3)).toBe(true);
             expect(EchelonForm.isReducedEchelonForm(reducedEchelonMatrix)).toBe(true);
             expect(EchelonForm.isReducedEchelonForm(reducedEchelonMatrix2)).toBe(true);
+        });
+    });
+
+    describe('isPivotElement', () => {
+
+        it('Should be defined', () => {
+            expect(EchelonForm.isPivotElement).toBeDefined();
+        });
+
+        it('Should return true for a pivot', () => {
+            expect(EchelonForm.isPivotElement(matrixWithPivots, 0, 0)).toBe(true);
+            expect(EchelonForm.isPivotElement(matrixWithPivots, 1, 1)).toBe(true);
+            expect(EchelonForm.isPivotElement(matrixWithPivots, 2, 2)).toBe(true);
+        });
+
+        it('Should return false for a non-pivot', () => {
+            expect(EchelonForm.isPivotElement(matrixWithPivots, 0, 1)).toBe(false);
+            expect(EchelonForm.isPivotElement(matrixWithPivots, 1, 0)).toBe(false);
+            expect(EchelonForm.isPivotElement(matrixWithPivots, 2, 1)).toBe(false);
+        });
+
+        it('Should throw an error if the row or column index is out of bounds', () => {
+            expect(() => EchelonForm.isPivotElement(matrixWithPivots, 3, 0)).toThrow();
+            expect(() => EchelonForm.isPivotElement(matrixWithPivots, 3, 3)).toThrow();
+        });
+    });
+
+    describe('isPivotColumn', () => {
+        it('Should be defined', () => {
+            expect(EchelonForm.isPivotColumn).toBeDefined();
+        });
+
+        it('Should return true for a pivot column', () => {
+            expect(EchelonForm.isPivotColumn(matrixWithPivots, 0)).toBe(true);
+            expect(EchelonForm.isPivotColumn(matrixWithPivots, 1)).toBe(true);
+            expect(EchelonForm.isPivotColumn(matrixWithPivots, 2)).toBe(true);
+        });
+
+        it('Should return false for a non-pivot column', () => {
+            expect(EchelonForm.isPivotColumn(zeroMatrix, 0)).toBe(false);
+            expect(EchelonForm.isPivotColumn(zeroMatrix, 1)).toBe(false);
+            expect(EchelonForm.isPivotColumn(zeroMatrix, 2)).toBe(false);
+        });
+
+        it('Should throw an error if the column index is out of bounds', () => {
+            expect(() => EchelonForm.isPivotColumn(matrixWithPivots, 3)).toThrow();
         });
     });
 })

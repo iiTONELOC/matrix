@@ -129,7 +129,7 @@ export interface EchelonFormIface {
      * @param matrix the matrix we are operating on
      * @returns true if the matrix is in echelon form, false otherwise
      */
-    isEchelonForm: (matrix: MatrixIface) => boolean;
+    isEchelonForm: (matrix: MatrixIface, checkReduced?: boolean) => boolean;
 
     /**
      * Determines if the matrix is in reduced echelon form
@@ -143,4 +143,30 @@ export interface EchelonFormIface {
      * @returns true if the matrix is in reduced echelon form, false otherwise
      */
     isReducedEchelonForm: (matrix: MatrixIface) => boolean;
+
+    /**
+     * Determines if an element in a matrix is the pivot element
+     *
+     * The pivot is any leading entry of a matrix that is in echelon form
+     * @param matrix the matrix we are operating on
+     * @param row the row index of the element we are checking
+     * @param col the column index of the element we are checking
+     * @returns true if the element is a pivot element, false otherwise
+     * @throws Lots of errors, if the row or column index is out of bounds as well as malformed matrices
+     * see {@link EchelonFormIface.isEchelonForm}
+     */
+    isPivotElement: (matrix: MatrixIface, row: number, col: number) => boolean;
+
+    /**
+     * Determines if a column is a pivot column
+     *
+     * A pivot column is a column that contains a pivot element
+     * @param matrix the matrix we are operating on
+     * @param col the column index of the column we are checking
+     * @returns true if the column is a pivot column, false otherwise
+     * @throws Lots of errors, if the column index is out of bounds as well as malformed matrices
+     * see {@link EchelonFormIface.isEchelonForm}
+     * see {@link EchelonFormIface.isPivotElement}
+    */
+    isPivotColumn: (matrix: MatrixIface, col: number) => boolean;
 }

@@ -2,6 +2,7 @@ import { validateCol, validateConstructor, validateGet, validateRow, validateSet
 import { MatrixIface, MatrixConstructor, MatrixUtilsIface } from './types';
 import { createUtils } from './utils';
 
+
 export class Matrix implements MatrixIface {
     public _matrix: number[];
     public numRows: number;
