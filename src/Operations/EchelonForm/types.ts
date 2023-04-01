@@ -1,0 +1,146 @@
+/**
+ * Echelon Form
+ *
+ * Definitions for Echelon Form
+ *
+ * - zero row : a row of all zeros
+ * - non-zero row : a row with at least one non-zero entry
+ * - zero column : a column of all zeros
+ * - non-zero column : a column with at least one non-zero entry
+ * - leading entry : the first non-zero entry in a row
+ *
+ *  (1) any zero rows are below all nonzero rows,
+ *  (2) the leading entry of each row is to the right of the leading entries in the rows above, and
+ *  (3) any entries below a leading entry are zeros. The third property is a consequence of the first two.
+ */
+
+import { MatrixIface } from '../../types';
+
+/**
+ * Echelon Form > Row Types
+ * @public
+ * @enum EchelonRowType
+ * - ZeroRow : a row of all zeros
+ * - NonZeroRow : a row with at least one non-zero entry
+ */
+export enum EchelonRowType {
+    /**
+     * @public
+     * a row of all zeros
+     */
+    ZeroRow = 0,
+    /**
+     * @public
+     * a row with at least one non-zero entry
+     */
+    NonZeroRow = 1
+}
+
+/**
+ * Echelon Form > Column Types
+ * @public
+ * @enum EchelonColType
+ * - ZeroCol : a column of all zeros
+ * - NonZeroCol : a column with at least one non-zero entry
+ */
+export enum EchelonColType {
+    /**
+     * @public
+     * a column of all zeros
+     */
+    ZeroCol = 0,
+    /**
+     * @public
+     * a column with at least one non-zero entry
+     */
+    NonZeroCol = 1
+}
+
+/**
+ * Echelon Form > Entry Types
+ * @public
+ * @enum EchelonEntryType
+ * - LeadingEntry : the first non-zero entry in a row
+ * - NonLeadingEntry : any entries below a leading entry are zeros
+ * (any entries above a leading entry we don't care about),
+ */
+export enum EchelonEntryType {
+    /**
+     * @public
+     * the first non-zero entry in a row
+     */
+    LeadingEntry = 1,
+    /**
+     * @public
+     * any entries below a leading entry are zeros,
+     * any entries above a leading entry we don't care about
+     */
+    NonLeadingEntry = 0
+}
+
+export interface EchelonFormIface {
+    /**
+     * @public
+     * Determines if a row in a matrix is a zero row
+     * @param matrix The matrix we are operating on
+     * @param row the index of the row we are checking
+     * @returns true if the row is a zero row, false otherwise
+     * @Throws an error if the row index is out of bounds
+     */
+    isZeroRow: (matrix: MatrixIface, row: number) => boolean;
+
+    /**
+     * @public
+     * Determines if a row in a matrix is a non-zero row
+     * @param matrix The matrix we are operating on
+     * @param row the index of the row we are checking
+     * @returns true if the row is a non-zero row, false otherwise
+     * @Throws an error if the row index is out of bounds
+     */
+    isNonZeroRow: (matrix: MatrixIface, row: number) => boolean;
+
+    /**
+     * Determines if a column in a matrix is a zero column
+     * @param matrix the matrix we are operating on
+     * @param col the index of the column we are checking
+     * @returns true if the column is a non-zero column, false otherwise
+     * @Throws an error if the column index is out of bounds
+     */
+    isZeroColumn: (matrix: MatrixIface, col: number) => boolean;
+
+    /**
+     * Determines if a column in a matrix is a non-zero column
+     * @param matrix the matrix we are operating on
+     * @param col the index of the column we are checking
+     * @returns true if the column is a non-zero column, false otherwise
+     * @Throws an error if the column index is out of bounds
+     */
+    isNonZeroColumn: (matrix: MatrixIface, col: number) => boolean;
+
+    /**
+     * Determines if the matrix is in echelon form
+     *
+     * To be in echelon form, the matrix must satisfy the following conditions:
+     * (1) any zero rows are below all nonzero rows,
+     * (2) the leading entry of each row is to the right of the leading entries
+     * in the rows above, and
+     * (3) any entries below a leading entry are zeros.
+     *
+     * @param matrix the matrix we are operating on
+     * @returns true if the matrix is in echelon form, false otherwise
+     */
+    isEchelonForm: (matrix: MatrixIface) => boolean;
+
+    /**
+     * Determines if the matrix is in reduced echelon form
+     *
+     * Reduced echelon form is a matrix in echelon form that satisfies the following conditions:
+     * (1) any rows that contain all zeros are at the bottom of the matrix,
+     * (2) the leading entry in each nonzero row is to the right of the leading entry in the row above it,
+     * (3) all entries below a leading entry are zeros, and
+     * (4) each leading entry is 1 and is the only nonzero entry in its column.
+     * @param matrix the matrix we are operating on
+     * @returns true if the matrix is in reduced echelon form, false otherwise
+     */
+    isReducedEchelonForm: (matrix: MatrixIface) => boolean;
+}

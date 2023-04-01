@@ -1,7 +1,8 @@
 import { describe, it, expect } from '@jest/globals';
+import { MatrixIface } from '../../Matrix/types';
 import Matrix from '../../Matrix';
 import RowOps from '.';
-import { MatrixIface } from '../../Matrix/types';
+
 
 describe('RowOps', () => {
     it('Should be defined', () => {
@@ -139,7 +140,5 @@ describe('RowOps', () => {
                 RowOps.addMultipleOfRow(0, 'g' as any, 2, matrixObj);
             }).toThrow();
         });
-
-
     })
 });
