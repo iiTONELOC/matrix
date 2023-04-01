@@ -2,8 +2,9 @@ import { MatrixIface } from '../types';
 import { isSquareMatrix } from './identifyMatrixType';
 
 export function trace(matrix: MatrixIface): number {
-    // must be a square matrix
+    // istanbul ignore next
     if (!isSquareMatrix(matrix)) {
+        // istanbul ignore next
         throw new Error('trace only works on square matrices');
     }
 

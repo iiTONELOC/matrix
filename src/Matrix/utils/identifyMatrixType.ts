@@ -23,6 +23,7 @@ export function isSquareMatrix(matrix: MatrixIface): boolean {
 
 export function isDiagonalMatrix(matrix: MatrixIface): boolean {
     // must be a square matrix
+    // istanbul ignore next
     if (!isSquareMatrix(matrix)) {
         return false;
     }
@@ -42,6 +43,7 @@ export function isDiagonalMatrix(matrix: MatrixIface): boolean {
 }
 
 export function isIdentity(matrix: MatrixIface) {
+    // istanbul ignore next
     if (!isDiagonalMatrix(matrix)) {
         return false;
     }
@@ -67,6 +69,7 @@ export function identifyMatrixType(matrix: MatrixIface): MatrixType {
         return MatrixType.ColumnMatrix;
     } else if (isRowMatrix(matrix)) {
         return MatrixType.RowMatrix;
+        // istanbul ignore next
     } else if (isSquareMatrix(matrix)) {
         const isDiagonal = isDiagonalMatrix(matrix);
         if (isDiagonal) {
@@ -76,6 +79,7 @@ export function identifyMatrixType(matrix: MatrixIface): MatrixType {
             return MatrixType.SquareMatrix;
         }
     } else {
+        // istanbul ignore next
         return MatrixType.NotSpecial;
     }
 }

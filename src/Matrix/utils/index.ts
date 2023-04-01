@@ -9,17 +9,17 @@
 import { MatrixIface } from '../types';
 import { MatrixUtilsIface } from './types';
 
+import { scale } from './scale';
 import { trace } from './trace';
 import { transpose } from './transpose';
 import { identifyMatrixType } from './identifyMatrixType';
-
-
 
 
 export function createUtils(matrix: MatrixIface): MatrixUtilsIface {
     return {
         identifyMatrixType: () => identifyMatrixType(matrix),
         transpose: () => transpose(matrix),
-        trace: () => trace(matrix)
+        trace: () => trace(matrix),
+        scale: (scalar: number) => scale(matrix, scalar)
     };
 }

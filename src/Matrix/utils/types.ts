@@ -87,4 +87,16 @@ export interface MatrixUtilsIface {
      * @returns {number} The trace of the matrix.
      */
     trace(): number;
+
+    /**
+     * Scales a matrix by the given scalar and returns a new matrix.
+     *
+     * Does not mutate the original matrix!
+     * @public
+     * @param {number} scalar The scalar to multiply the matrix by.
+     * @returns {number[]} The scaled matrix.
+     * @throws {Error} If the scalar is not a number.
+     * @throws {Error} If the scalar is not finite.
+     */
+    scale(scalar: number): MatrixIface;
 }

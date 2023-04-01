@@ -43,9 +43,74 @@ export class Matrix implements MatrixIface {
         return new Matrix({ numRows: this.numRows, numCols: this.numCols, matrix: this._matrix });
     }
 
-    public print(): void {
+    public print(): void { //NOSONAR
+        const longestNum = Math.max(...this._matrix.map((num: number) => num.toString().length));
+
+        function printDash() {
+            process.stdout.write('─'.repeat(longestNum + 2));
+        }
+
+        function printNewLine() {
+            process.stdout.write('\n');
+        }
+
+        function printPipe() {
+            process.stdout.write('│');
+        }
+
+        // adds the necessary spacing to the front and back of the number
+        function padNum(num: string): string {
+            // get the length of the number
+            const numLength = num.toString().length;
+
+            return numLength === longestNum ? ' ' + num + ' ' :
+                ' '.repeat(longestNum - numLength + 1) + num + ' ';
+        }
+
+        // clear the line
+        process.stdout.write('\r');
+
+        // print the matrix
         for (let i = 0; i < this.numRows; i++) {
-            process.stdout.write(this.getRow(i).toString().replace(/,/g, ' '));
+            // if its the first row, print the symbols for the top of the matrix
+            if (i === 0) {
+                process.stdout.write('┌');
+                for (let j = 0; j < this.numCols; j++) {
+                    printDash();
+                    j === this.numCols - 1 && (() => process.stdout.write('┐'))();
+                    j !== this.numCols - 1 && (() => process.stdout.write('┬'))();
+                }
+                printNewLine();
+            }
+
+            // prints sides and elements of the matrix
+            printPipe();
+            let row = this.getRow(i).toString().replace(/,/g, ' ');
+            // using regex, add the spacing to the front of the number
+            row = row.replace(/\d+/g, (num: string) => padNum(num));
+            // print the row
+            process.stdout.write(row);
+            printPipe();
+            printNewLine();
+
+            // if its the last row, print the symbols for the bottom of the matrix
+            if (i === this.numRows - 1) {
+                process.stdout.write('└');
+                for (let j = 0; j < this.numCols; j++) {
+                    printDash();
+                    j === this.numCols - 1 && (() => process.stdout.write('┘'))();
+                    j !== this.numCols - 1 && (() => process.stdout.write('┴'))();
+                }
+                printNewLine();
+            } else {
+                process.stdout.write('├');
+                for (let j = 0; j < this.numCols; j++) {
+                    printDash();
+                    j === this.numCols - 1 && (() => process.stdout.write('┤'))();
+                    j !== this.numCols - 1 && (() => process.stdout.write('┼'))();
+                }
+                printNewLine();
+            }
         }
     }
 }

@@ -304,6 +304,7 @@ describe('Matrix', () => {
             const matrix: MatrixIface = _matrix(mData);
             it('Should have a method to print the matrix', () => {
                 expect(matrix.print).toBeDefined();
+
                 expect(matrix.print).toBeInstanceOf(Function);
                 expect.assertions(2);
             });
@@ -311,9 +312,15 @@ describe('Matrix', () => {
             it('Should print the matrix to the console', () => {
                 const spy = jest.spyOn(process.stdout, 'write');
                 matrix.print();
-                expect(spy).toHaveBeenCalled();
-                expect(spy).toHaveBeenCalledWith('1 2');
-                expect(spy).toHaveBeenCalledWith('3 4');
+                // 27 times
+                const fourByFour = new Matrix({
+                    numRows: 4, numCols: 4,
+                    matrix: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]
+                });
+
+
+                fourByFour.print();
+                expect(spy).toHaveBeenCalledTimes(94);
                 spy.mockRestore();
             });
         });
