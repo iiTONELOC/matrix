@@ -116,3 +116,5 @@ export function checkLeadingEntries(matrix: MatrixIface, checkReduced = false): 
         prevLeadingEntry = leadingEntry;
     }
 }
+
+

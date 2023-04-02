@@ -1,2 +1,2 @@
 export { default as matrix, Matrix } from './Matrix';
-export { ElemRowOps } from './Operations';
+export { ElemRowOps, EchelonForm } from './Operations';
