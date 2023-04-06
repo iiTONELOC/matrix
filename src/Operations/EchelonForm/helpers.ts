@@ -41,13 +41,10 @@ export function checkZeroRows(matrix: MatrixIface): void { //NOSONAR
         }
     }
 
-    // check that all rows above the zero rows are non-zero rows
-    for (const element of zeroRowIndices) {
-        const zeroRowIndex = element;
-        for (let prevRow = zeroRowIndex - 1; prevRow >= 0; prevRow--) {
-            if (EchelonForm.isZeroRow(matrix, prevRow)) {
-                throw new Error(errMsg);
-            }
+    // check that all rows above the the last zero row are non-zero rows
+    for (let row = 0; row < zeroRowIndices[0]; row++) {
+        if (EchelonForm.isZeroRow(matrix, row)) {
+            throw new Error(errMsg);
         }
     }
 }
@@ -67,15 +64,26 @@ export function checkZeroRows(matrix: MatrixIface): void { //NOSONAR
 export function checkLeadingEntries(matrix: MatrixIface, checkReduced = false): void { //NOSONAR
 
     const leadingEntries: Map<number, number> = new Map();
-    const isLeading = (entry: number): boolean => entry !== 0;
+
 
     // loop over the rows of the matrix
     for (let row = 0; row < matrix.numRows; row++) {
-        const leadingEntry = matrix.getRow(row).findIndex(isLeading);
-        if (leadingEntry !== -1) {
-            leadingEntries.set(row, leadingEntry);
+        const Row = matrix.getRow(row);
+
+        // loop over the entries of the row
+        for (let col = 0; col < Row.length; col++) {
+            const entry = Row[col];
+
+            const firstNonZeroEntryIndex = Row.findIndex((entry: number) => entry !== 0);
+            // The leading entry of a row is the first nonzero entry from the left.
+            const isLeadingEntry = entry !== 0 && col === firstNonZeroEntryIndex;
+            if (isLeadingEntry) {
+                leadingEntries.set(row, col);
+            }
         }
     }
+
+    // console.log({ leadingEntries })
 
     // 2.check that the leading entries are in the correct order
     let prevLeadingEntry = -1;
@@ -86,8 +94,10 @@ export function checkLeadingEntries(matrix: MatrixIface, checkReduced = false): 
             throw new Error(errMsg);
         }
 
-        // 3. check that all entries below a leading entry are zeros
+        // 3. check that all entries in the same column below the leading entry are zero
         for (let nextRow = row + 1; nextRow < matrix.numRows; nextRow++) {
+            // only need to check the entries below the leading entry and not any other
+            // entries in the row
             if (matrix.get(nextRow, leadingEntry) !== 0) {
                 throw new Error(errMsg);
             }

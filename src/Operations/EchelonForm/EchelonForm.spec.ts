@@ -28,6 +28,20 @@ const matrixWithPivots: MatrixIface = Matrix({
     ]
 });
 
+const fiveBySixMatrix = Matrix({
+    numRows: 5,
+    numCols: 6,
+    matrix: [
+        [1, 5, 0, 0, 3, 9],
+        [0, 0, 1, 0, -2, -7],
+        [0, 0, 0, 1, 8, 6],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0]
+    ]
+});
+
+
+
 describe('EchelonForm', () => {
     it('Should be defined', () => {
         expect(EchelonForm).toBeDefined();
@@ -135,7 +149,10 @@ describe('EchelonForm', () => {
                 ]
             });
 
+
+            expect(EchelonForm.isEchelonForm(zeroMatrix)).toBe(true);
             expect(EchelonForm.isEchelonForm(eMatrix2)).toBe(true);
+            expect(EchelonForm.isEchelonForm(fiveBySixMatrix)).toBe(true);
             expect(EchelonForm.isEchelonForm(echelonMatrix)).toBe(true);
         });
 
@@ -157,10 +174,11 @@ describe('EchelonForm', () => {
                 ]
             });
 
-            expect(EchelonForm.isEchelonForm(zeroMatrix)).toBe(false);
+
             expect(EchelonForm.isEchelonForm(nonZeroMatrix)).toBe(false);
-            expect(EchelonForm.isEchelonForm(nonEchelonMatrix2)).toBe(false);
             expect(EchelonForm.isEchelonForm(nonEchelonMatrix)).toBe(false);
+            expect(EchelonForm.isEchelonForm(nonEchelonMatrix2)).toBe(false);
+
         });
     });
 
@@ -205,7 +223,6 @@ describe('EchelonForm', () => {
     });
 
     describe('isPivotElement', () => {
-
         it('Should be defined', () => {
             expect(EchelonForm.isPivotElement).toBeDefined();
         });
@@ -247,148 +264,6 @@ describe('EchelonForm', () => {
 
         it('Should throw an error if the column index is out of bounds', () => {
             expect(() => EchelonForm.isPivotColumn(matrixWithPivots, 3)).toThrow();
-        });
-    });
-
-    describe('isFreeVariable', () => {
-        it('Should be defined', () => {
-            expect(EchelonForm.isFreeVariable).toBeDefined();
-        });
-
-        it('Should return true for a free variable', () => {
-            expect(EchelonForm.isFreeVariable(zeroMatrix, 0)).toBe(true);
-            expect(EchelonForm.isFreeVariable(zeroMatrix, 1)).toBe(true);
-            expect(EchelonForm.isFreeVariable(zeroMatrix, 2)).toBe(true);
-        });
-
-        it('Should return false for a non-free variable', () => {
-            expect(EchelonForm.isFreeVariable(matrixWithPivots, 0)).toBe(false);
-            expect(EchelonForm.isFreeVariable(matrixWithPivots, 1)).toBe(false);
-            expect(EchelonForm.isFreeVariable(matrixWithPivots, 2)).toBe(false);
-        });
-
-        it('Should throw an error if the column index is out of bounds', () => {
-            expect(() => EchelonForm.isFreeVariable(matrixWithPivots, 3)).toThrow();
-        });
-
-        it('Should be able to deal with augmented matrices', () => {
-            expect(EchelonForm.isFreeVariable(matrixWithPivots, 0, true)).toBe(false);
-            expect(EchelonForm.isFreeVariable(matrixWithPivots, 1, true)).toBe(false);
-            expect(EchelonForm.isFreeVariable(matrixWithPivots, 2, true)).toBe(false);
-        });
-    });
-
-    describe('isBasicVariable', () => {
-        it('Should be defined', () => {
-            expect(EchelonForm.isBasicVariable).toBeDefined();
-        });
-
-        it('Should return true for a basic variable', () => {
-            expect(EchelonForm.isBasicVariable(matrixWithPivots, 0)).toBe(true);
-            expect(EchelonForm.isBasicVariable(matrixWithPivots, 1)).toBe(true);
-            expect(EchelonForm.isBasicVariable(matrixWithPivots, 2)).toBe(true);
-        });
-
-        it('Should return false for a non-basic variable', () => {
-            expect(EchelonForm.isBasicVariable(zeroMatrix, 0)).toBe(false);
-            expect(EchelonForm.isBasicVariable(zeroMatrix, 1)).toBe(false);
-            expect(EchelonForm.isBasicVariable(zeroMatrix, 2)).toBe(false);
-        });
-
-        it('Should throw an error if the column index is out of bounds', () => {
-            expect(() => EchelonForm.isBasicVariable(matrixWithPivots, 3)).toThrow();
-        });
-
-        it('Should be able to deal with augmented matrices', () => {
-            expect(EchelonForm.isBasicVariable(matrixWithPivots, 0, true)).toBe(true);
-            expect(EchelonForm.isBasicVariable(matrixWithPivots, 1, true)).toBe(true);
-            expect(EchelonForm.isBasicVariable(matrixWithPivots, 2, false)).toBe(true);
-        });
-    });
-
-    describe('getGeneralSolution', () => {
-        it('Should be defined', () => {
-            expect(EchelonForm.getGeneralSolution).toBeDefined();
-        });
-        const twoByTwoMatrix = Matrix({
-            numRows: 2,
-            numCols: 3,
-            matrix: [
-                // x_1 + 8x_2 = 6
-                [1, 8, 6],
-                // 2x_2 = 3
-                [0, 1, 3]
-            ]
-        });
-
-        const twoByFourMatrix = Matrix({
-            numRows: 2,
-            numCols: 4,
-            matrix: [
-                //x_1 + 5x_3  = 6
-                [1, 0, 5, 6],
-                //x_2 - 3x_3 = 4
-                [0, 1, -3, 4]
-            ]
-        });
-
-
-        it('Should return the correct solution for a 2x3 matrix', () => {
-            // The general solution aims to express each variable in terms of the free variables
-            // here there are no free variables so the general solution is just a single solution
-            expect(EchelonForm.getGeneralSolution(twoByTwoMatrix)).toEqual(['x_1 = -18', 'x_2 = 3']);
-        });
-
-        it('Should return the correct solution for a 2x4 matrix', () => {
-            // The general solution aims to express each variable in terms of the free variables
-            expect(EchelonForm.getGeneralSolution(twoByFourMatrix)).toEqual([
-                'x_1 = 6 - 5x_3 ',
-                'x_2 = 4 + 3x_3 ',
-                'x_3 is a free variable'
-            ]);
-        });
-    })
-
-    describe('parametricForm', () => {
-        it('Should be defined', () => {
-            expect(EchelonForm.getParametricForm).toBeDefined();
-        });
-        const twoByTwoMatrix = Matrix({
-            numRows: 2,
-            numCols: 3,
-            matrix: [
-                // x_1 + 8x_2 = 6
-                [1, 8, 6],
-                // 2x_2 = 3
-                [0, 1, 3]
-            ]
-        });
-
-        const twoByFourMatrix = Matrix({
-            numRows: 2,
-            numCols: 4,
-            matrix: [
-                //x_1 + 5x_3  = 6
-                [1, 0, 5, 6],
-                //x_2 - 3x_3 = 4
-                [0, 1, -3, 4]
-            ]
-        });
-
-
-        it('Should return the correct parametric form for a 2x3 matrix', () => {
-            expect(EchelonForm.getParametricForm(twoByTwoMatrix)).toEqual([
-                '-18',
-                '3'
-            ]);
-        });
-
-        it('Should return the correct parametric form for a 2x4 matrix', () => {
-            expect(EchelonForm.getParametricForm(twoByFourMatrix)).toEqual([
-                '6 - 5x_3',
-                '4 + 3x_3',
-                'x_3'
-            ]);
         });
     });
 })

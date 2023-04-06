@@ -46,17 +46,22 @@ export class Matrix implements MatrixIface {
 
     public print(): void { //NOSONAR
         const longestNum = Math.max(...this._matrix.map((num: number) => num.toString().length));
+        let outStr = '';
+
+        function toOut(str: string) {
+            outStr += str;
+        }
 
         function printDash() {
-            process.stdout.write('─'.repeat(longestNum + 2));
+            toOut('─'.repeat(longestNum + 2));
         }
 
         function printNewLine() {
-            process.stdout.write('\n');
+            toOut('\n');
         }
 
         function printPipe() {
-            process.stdout.write('│');
+            toOut('│');
         }
 
         // adds the necessary spacing to the front and back of the number
@@ -68,18 +73,16 @@ export class Matrix implements MatrixIface {
                 ' '.repeat(longestNum - numLength + 1) + num + ' ';
         }
 
-        // clear the line
-        process.stdout.write('\r');
 
         // print the matrix
         for (let i = 0; i < this.numRows; i++) {
             // if its the first row, print the symbols for the top of the matrix
             if (i === 0) {
-                process.stdout.write('┌');
+                toOut('┌');
                 for (let j = 0; j < this.numCols; j++) {
                     printDash();
-                    j === this.numCols - 1 && (() => process.stdout.write('┐'))();
-                    j !== this.numCols - 1 && (() => process.stdout.write('┬'))();
+                    j === this.numCols - 1 && (() => toOut('┐'))();
+                    j !== this.numCols - 1 && (() => toOut('┬'))();
                 }
                 printNewLine();
             }
@@ -88,31 +91,34 @@ export class Matrix implements MatrixIface {
             printPipe();
             let row = this.getRow(i).toString().replace(/,/g, ' ');
             // using regex, add the spacing to the front of the number
-            row = row.replace(/\d+/g, (num: string) => padNum(num));
+            // capture the negative sign and the number
+            row = row.replace(/(-?\d+)/g, (match, p1) => padNum(p1));
             // print the row
-            process.stdout.write(row);
+            toOut(row);
             printPipe();
             printNewLine();
 
             // if its the last row, print the symbols for the bottom of the matrix
             if (i === this.numRows - 1) {
-                process.stdout.write('└');
+                toOut('└');
                 for (let j = 0; j < this.numCols; j++) {
                     printDash();
-                    j === this.numCols - 1 && (() => process.stdout.write('┘'))();
-                    j !== this.numCols - 1 && (() => process.stdout.write('┴'))();
+                    j === this.numCols - 1 && (() => toOut('┘'))();
+                    j !== this.numCols - 1 && (() => toOut('┴'))();
                 }
                 printNewLine();
             } else {
-                process.stdout.write('├');
+                toOut('├');
                 for (let j = 0; j < this.numCols; j++) {
                     printDash();
-                    j === this.numCols - 1 && (() => process.stdout.write('┤'))();
-                    j !== this.numCols - 1 && (() => process.stdout.write('┼'))();
+                    j === this.numCols - 1 && (() => toOut('┤'))();
+                    j !== this.numCols - 1 && (() => toOut('┼'))();
                 }
                 printNewLine();
             }
         }
+        process.stdout.write('\n');
+        process.stdout.write(outStr);
     }
 }
 

@@ -320,7 +320,7 @@ describe('Matrix', () => {
 
 
                 fourByFour.print();
-                expect(spy).toHaveBeenCalledTimes(94);
+                expect(spy).toHaveBeenCalledTimes(4);
                 spy.mockRestore();
             });
         });
